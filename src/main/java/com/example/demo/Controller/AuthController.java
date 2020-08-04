@@ -3,7 +3,7 @@ package com.example.demo.Controller;
 import com.example.demo.dto.RegisterRequest;
 import com.example.demo.service.AuthService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
+import static org.springframework.http.HttpStatus.OK;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +20,6 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody RegisterRequest registerRequest){
         authService.signup(registerRequest);
-        return new ResponseEntity<>("User registration successful", HttpStatus.OK);
+        return new ResponseEntity<>("User registration successful", OK);
     }
 }
