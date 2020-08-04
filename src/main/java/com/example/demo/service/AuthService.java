@@ -9,7 +9,9 @@ import com.example.demo.model.User;
 import com.example.demo.model.VerificationToken;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.VerificationTokenRepository;
+import com.example.demo.security.JwtProvider;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,7 +26,7 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
-@Transactional
+@Slf4j
 public class AuthService {
 
 
@@ -33,8 +35,10 @@ public class AuthService {
     private final VerificationTokenRepository verificationTokenRepository;
     private final MailService mailService;
     private final AuthenticationManager authenticationManager;
+    private final JwtProvider jwtProvider;
+    private final MailContentBuilder mailContentBuilder;
 
-
+    @Transactional
     public void signup(RegisterRequest registerRequest ) {
         User user = new User();
         user.setUsername(registerRequest.getUsername());
@@ -57,6 +61,7 @@ public class AuthService {
         fetchUserAndEnable(verificationToken.orElseThrow(() -> new SpringRedditException("Invalid Token")));
     }
 
+    @Transactional
     private void fetchUserAndEnable(VerificationToken verificationToken) {
         String username = verificationToken.getUser().getUsername();
         User user = userRepository.findByUsername(username).orElseThrow(() -> new SpringRedditException("User not found with name - " + username));
@@ -74,16 +79,23 @@ public class AuthService {
         return token;
     }
 
-    public AuthenticationReposne login(LoginRequest loginRequest){
+    private String encodePassword(String password){
+        return passwordEncoder.encode(password);
+    }
+
+    public AuthenticationResponse login(LoginRequest loginRequest){
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
                 loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authenticate);
-        String token = jwtProvider.generateToken(authenticate);
-        return AuthenticationResponse.builder()
+        String authenticationToken = jwtProvider.generateToken(authenticate);
+        return new AuthenticationResponse(authenticationToken, loginRequest.getUsername());
+       /* return AuthenticationResponse.builder()
                 .authenticationToken(token)
                 .refreshToken(refreshTokenService.generateRefreshToken().getToken())
                 .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
                 .username(loginRequest.getUsername())
-                .build();
+                .build();*/
     }
+
+
 }

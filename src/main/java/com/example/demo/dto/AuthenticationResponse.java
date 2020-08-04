@@ -8,10 +8,9 @@ import java.time.Instant;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class AuthenticationResponse {
     private String authenticationToken;
-    private String refreshToken;
-    private Instant expiresAt;
+   // private String refreshToken;
+    //private Instant expiresAt;
     private String username;
 }
