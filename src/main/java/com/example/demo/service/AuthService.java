@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
-//@Transactional
+@Transactional
 public class AuthService {
 
 
@@ -26,7 +26,6 @@ public class AuthService {
     private final MailService mailService;
 
 
-    @Transactional
     public void signup(RegisterRequest registerRequest ) {
         User user = new User();
         user.setUsername(registerRequest.getUsername());
