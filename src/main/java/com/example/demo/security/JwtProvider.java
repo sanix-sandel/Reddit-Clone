@@ -80,14 +80,14 @@ public class JwtProvider {
         }
     }
 
-    public String getUsernameFromJwt(String token) {
+  /*  public String getUsernameFromJwt(String token) {
         Claims claims = parser()
                 .setSigningKey(getPublickey())
                 .parseClaimsJws(token)
                 .getBody();
 
         return claims.getSubject();
-    }
+    }*/
 /*
     public Long getJwtExpirationInMillis() {
         return jwtExpirationInMillis;

@@ -84,10 +84,13 @@ public class AuthService {
     }
 
     public AuthenticationResponse login(LoginRequest loginRequest){
+        System.out.println("Trying to login");
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
                 loginRequest.getPassword()));
+        System.out.println(authenticate);
         SecurityContextHolder.getContext().setAuthentication(authenticate);
         String authenticationToken = jwtProvider.generateToken(authenticate);
+
         return new AuthenticationResponse(authenticationToken, loginRequest.getUsername());
        /* return AuthenticationResponse.builder()
                 .authenticationToken(token)
