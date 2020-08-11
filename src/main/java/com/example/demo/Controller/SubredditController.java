@@ -1,13 +1,16 @@
 package com.example.demo.Controller;
 
 
+import com.example.demo.dto.SubredditDto;
+import com.example.demo.service.SubredditService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
-@RequestMappping("/api/subreddit")
+@RequestMapping("/api/subreddit")
 @AllArgsConstructor
 public class SubredditController {
 

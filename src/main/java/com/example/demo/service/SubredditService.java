@@ -3,11 +3,14 @@ package com.example.demo.service;
 
 import com.example.demo.dto.SubredditDto;
 import com.example.demo.exceptions.SpringRedditException;
+import com.example.demo.exceptions.SubredditNotFoundException;
 import com.example.demo.model.Subreddit;
 import com.example.demo.repository.SubredditRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static java.time.Instant.now;
 import static java.util.stream.Collectors.toList;
@@ -19,7 +22,7 @@ public class SubredditService {
     private final AuthService authService;
 
     @Transactional(readOnly=true)
-    public List<SubredditDto>getAll(){
+    public List<SubredditDto> getAll(){
         return subredditRepository.findAll()
                 .stream()
                 .map(this::mapToDto)
@@ -29,7 +32,7 @@ public class SubredditService {
     @Transactional
     public SubredditDto save(SubredditDto subredditDto){
         Subreddit subreddit=subredditRepository.save(mapToSubreddit(subredditDto));
-        subredditDto.setId(subreddit.getID());
+        subredditDto.setId(subreddit.getId());
         return subredditDto;
     }
 
