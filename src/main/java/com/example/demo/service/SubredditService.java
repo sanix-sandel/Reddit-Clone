@@ -1,8 +1,10 @@
 package com.example.demo.service;
 
 
+import com.example.demo.dto.SubredditDto;
 import com.example.demo.exceptions.SpringRedditException;
 import com.example.demo.model.Subreddit;
+import com.example.demo.repository.SubredditRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +15,7 @@ import static java.util.stream.Collectors.toList;
 @Service
 @AllArgsConstructor
 public class SubredditService {
-    private final subredditRepository subredditRepository;
+    private final SubredditRepository subredditRepository;
     private final AuthService authService;
 
     @Transactional(readOnly=true)
@@ -26,8 +28,8 @@ public class SubredditService {
 
     @Transactional
     public SubredditDto save(SubredditDto subredditDto){
-        Subreddit save=subredditRepository.save(subredditMapper.mapDtoSubreddit(subredditDto));
-        subredditDto.setId(save.getID());
+        Subreddit subreddit=subredditRepository.save(mapToSubreddit(subredditDto));
+        subredditDto.setId(subreddit.getID());
         return subredditDto;
     }
 
@@ -45,7 +47,7 @@ public class SubredditService {
                 .build();
     }
 
-    private Subreddit mapTosubreddit(SubredditDto subredditDto){
+    private Subreddit mapToSubreddit(SubredditDto subredditDto){
         return Subreddit.builder().name("/r/"+subredditDto.getName())
                 .description(subredditDto.getDescription())
                 .user(authService.getCurrentUser())
