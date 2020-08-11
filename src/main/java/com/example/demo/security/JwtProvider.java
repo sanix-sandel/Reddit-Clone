@@ -66,10 +66,10 @@ public class JwtProvider {
         }
     }
 
-    /*public boolean validateToken(String jwt) {
+    public boolean validateToken(String jwt) {
         parser().setSigningKey(getPublickey()).parseClaimsJws(jwt);
         return true;
-    }*/
+    }
 
    /* private PublicKey getPublickey() {
         try {
