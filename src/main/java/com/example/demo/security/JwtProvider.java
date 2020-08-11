@@ -60,25 +60,25 @@ public class JwtProvider {
 */
     private PrivateKey getPrivateKey() {
         try {
-            return (PrivateKey) keyStore.getKey("sprignblog", "secret".toCharArray());
+            return (PrivateKey) keyStore.getKey("springblog", "secret".toCharArray());
         } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException e) {
             throw new SpringRedditException("Exception occured while retrieving public key from keystore", e);
         }
     }
 
-    public boolean validateToken(String jwt) {
+    /*public boolean validateToken(String jwt) {
         parser().setSigningKey(getPublickey()).parseClaimsJws(jwt);
         return true;
-    }
+    }*/
 
-    private PublicKey getPublickey() {
+   /* private PublicKey getPublickey() {
         try {
             return keyStore.getCertificate("springblog").getPublicKey();
         } catch (KeyStoreException e) {
             throw new SpringRedditException("Exception occured while " +
                     "retrieving public key from keystore", e);
         }
-    }
+    }*/
 
   /*  public String getUsernameFromJwt(String token) {
         Claims claims = parser()
