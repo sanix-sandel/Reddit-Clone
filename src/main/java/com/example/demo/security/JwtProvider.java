@@ -14,11 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.*;
 import java.security.cert.CertificateException;
-import java.sql.Date;
-import java.time.Instant;
 
 import static io.jsonwebtoken.Jwts.parser;
-import static java.util.Date.from;
 
 @Service
 public class JwtProvider {
@@ -71,23 +68,23 @@ public class JwtProvider {
         return true;
     }
 
-   /* private PublicKey getPublickey() {
+    private PublicKey getPublickey() {
         try {
             return keyStore.getCertificate("springblog").getPublicKey();
         } catch (KeyStoreException e) {
             throw new SpringRedditException("Exception occured while " +
                     "retrieving public key from keystore", e);
         }
-    }*/
+    }
 
-  /*  public String getUsernameFromJwt(String token) {
+    public String getUsernameFromJWT(String token) {
         Claims claims = parser()
                 .setSigningKey(getPublickey())
                 .parseClaimsJws(token)
                 .getBody();
 
         return claims.getSubject();
-    }*/
+    }
 /*
     public Long getJwtExpirationInMillis() {
         return jwtExpirationInMillis;
