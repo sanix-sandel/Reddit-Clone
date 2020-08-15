@@ -2,7 +2,6 @@ package com.example.demo.service;
 
 
 import com.example.demo.dto.SubredditDto;
-import com.example.demo.exceptions.SpringRedditException;
 import com.example.demo.exceptions.SubredditNotFoundException;
 import com.example.demo.model.Subreddit;
 import com.example.demo.repository.SubredditRepository;
@@ -45,6 +44,7 @@ public class SubredditService {
 
     private SubredditDto mapToDto(Subreddit subreddit){
         return SubredditDto.builder().name(subreddit.getName())
+                .description(subreddit.getDescription())
                 .id(subreddit.getId())
                 .postCount(subreddit.getPosts().size())
                 .build();
