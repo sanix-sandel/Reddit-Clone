@@ -13,7 +13,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -37,6 +38,9 @@ class PostServiceTest {
     @Mock
     private PostMapper postMapper;
 
+    @Captor
+    private ArgumentCaptor<Post> postArgumentCaptor;
+
     @Test
     @DisplayName("Should Retrieve Post by Id")
     public void shouldFindPostById() {
@@ -57,7 +61,6 @@ class PostServiceTest {
         Assertions.assertThat(actualPostResponse.getPostName()).isEqualTo(expectedPostResponse.getPostName());
     }
 
-    //Verifying method invocations using Mockito
     @Test
     @DisplayName("Should Save Posts")
     public void shouldSavePosts() {
@@ -71,10 +74,15 @@ class PostServiceTest {
 
         Mockito.when(subredditRepository.findByName("First Subreddit"))
                 .thenReturn(Optional.of(subreddit));
+        Mockito.when(authService.getCurrentUser())
+                .thenReturn(currentUser);
         Mockito.when(postMapper.map(postRequest, subreddit, currentUser))
                 .thenReturn(post);
-        postService.save(postRequest);
-        Mockito.verify(postRepository, Mockito.times(1)).save(ArgumentMatchers.any(Post.class));
 
+        postService.save(postRequest);
+        Mockito.verify(postRepository, Mockito.times(1)).save(postArgumentCaptor.capture());
+
+        Assertions.assertThat(postArgumentCaptor.getValue().getPostId()).isEqualTo(123L);
+        Assertions.assertThat(postArgumentCaptor.getValue().getPostName()).isEqualTo("First Post");
     }
 }
