@@ -10,6 +10,7 @@ import com.example.demo.repository.PostRepository;
 import com.example.demo.repository.SubredditRepository;
 import com.example.demo.repository.UserRepository;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,12 +42,16 @@ class PostServiceTest {
     @Captor
     private ArgumentCaptor<Post> postArgumentCaptor;
 
+    private PostService postService;
+
+    @BeforeEach
+    public void setup() {
+        postService = new PostService(postRepository, subredditRepository, userRepository, authService, postMapper);
+    }
+
     @Test
     @DisplayName("Should Retrieve Post by Id")
     public void shouldFindPostById() {
-
-        PostService postService = new PostService(postRepository, subredditRepository, userRepository, authService, postMapper);
-
         Post post = new Post(123L, "First Post", "http://url.site", "Test",
                 0, null, Instant.now(), null);
         PostResponse expectedPostResponse = new PostResponse(123L, "First Post", "http://url.site", "Test",
@@ -64,8 +69,6 @@ class PostServiceTest {
     @Test
     @DisplayName("Should Save Posts")
     public void shouldSavePosts() {
-        PostService postService = new PostService(postRepository, subredditRepository, userRepository, authService, postMapper);
-
         User currentUser = new User(123L, "test user", "secret password", "user@email.com", Instant.now(), true);
         Subreddit subreddit = new Subreddit(123L, "First Subreddit", "Subreddit Description", emptyList(), Instant.now(), currentUser);
         Post post = new Post(123L, "First Post", "http://url.site", "Test",
