@@ -1,6 +1,5 @@
 package com.example.demo.security;
 
-
 import com.example.demo.exceptions.SpringRedditException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -14,16 +13,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.*;
 import java.security.cert.CertificateException;
+import java.sql.Date;
+import java.time.Instant;
 
 import static io.jsonwebtoken.Jwts.parser;
+import static java.util.Date.from;
 
 @Service
 public class JwtProvider {
 
     private KeyStore keyStore;
-
-  //  @Value("${jwt.expiration.time}")
-    //private Long jwtExpirationInMillis;
+    @Value("${jwt.expiration.time}")
+    private Long jwtExpirationInMillis;
 
     @PostConstruct
     public void init() {
@@ -38,14 +39,15 @@ public class JwtProvider {
     }
 
     public String generateToken(Authentication authentication) {
-       org.springframework.security.core.userdetails.User principal=(User)authentication.getPrincipal();
+        User principal = (User) authentication.getPrincipal();
         return Jwts.builder()
                 .setSubject(principal.getUsername())
+                .setIssuedAt(from(Instant.now()))
                 .signWith(getPrivateKey())
+                .setExpiration(Date.from(Instant.now().plusMillis(jwtExpirationInMillis)))
                 .compact();
-
     }
-/*
+
     public String generateTokenWithUserName(String username) {
         return Jwts.builder()
                 .setSubject(username)
@@ -54,7 +56,7 @@ public class JwtProvider {
                 .setExpiration(Date.from(Instant.now().plusMillis(jwtExpirationInMillis)))
                 .compact();
     }
-*/
+
     private PrivateKey getPrivateKey() {
         try {
             return (PrivateKey) keyStore.getKey("springblog", "secret".toCharArray());
@@ -77,7 +79,7 @@ public class JwtProvider {
         }
     }
 
-    public String getUsernameFromJWT(String token) {
+    public String getUsernameFromJwt(String token) {
         Claims claims = parser()
                 .setSigningKey(getPublickey())
                 .parseClaimsJws(token)
@@ -85,8 +87,8 @@ public class JwtProvider {
 
         return claims.getSubject();
     }
-/*
+
     public Long getJwtExpirationInMillis() {
         return jwtExpirationInMillis;
-    }*/
+    }
 }

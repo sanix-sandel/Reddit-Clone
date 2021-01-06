@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.CommentsDto;
 import com.example.demo.exceptions.PostNotFoundException;
+import com.example.demo.exceptions.SpringRedditException;
 import com.example.demo.mapper.CommentMapper;
 import com.example.demo.model.Comment;
 import com.example.demo.model.NotificationEmail;
@@ -12,13 +13,15 @@ import com.example.demo.repository.PostRepository;
 import com.example.demo.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @AllArgsConstructor
 public class CommentService {
-
     private static final String POST_URL = "";
     private final PostRepository postRepository;
     private final UserRepository userRepository;
@@ -27,6 +30,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final MailContentBuilder mailContentBuilder;
     private final MailService mailService;
+
 
     public void save(CommentsDto commentsDto) {
         Post post = postRepository.findById(commentsDto.getPostId())
@@ -56,5 +60,12 @@ public class CommentService {
                 .stream()
                 .map(commentMapper::mapToDto)
                 .collect(toList());
+    }
+
+    public boolean containsSwearWords(String comment) {
+        if (comment.contains("shit")) {
+            throw new SpringRedditException("Comments contains unacceptable language");
+        }
+        return false;
     }
 }

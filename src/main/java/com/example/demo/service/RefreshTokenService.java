@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.exceptions.SpringRedditException;
 import com.example.demo.model.RefreshToken;
 import com.example.demo.repository.RefreshTokenRepository;
 import lombok.AllArgsConstructor;
