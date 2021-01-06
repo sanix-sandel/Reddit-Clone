@@ -4,6 +4,8 @@ import com.example.demo.exceptions.SpringRedditException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CommentServiceTest {
@@ -13,17 +15,17 @@ class CommentServiceTest {
     public void shouldNotContainSwearWordsInsideComment(){
         CommentService commentService=new CommentService(null, null, null,
                 null, null, null, null);
-        assertFalse(commentService.containsSwearWords("This is a comment"));
+        assertThat(commentService.containsSwearWords("This is a comment")).isFalse();
     }
 
     @Test
     @DisplayName("Should Throw Exception when Exception Contains Swear Words")
     public void shouldFailWhenCommentContainsSwearWords() {
         CommentService commentService = new CommentService(null, null, null, null, null, null, null);
-        SpringRedditException exception = assertThrows(SpringRedditException.class, () -> {
+
+        assertThatThrownBy(() -> {
             commentService.containsSwearWords("This is shitty comment");
-        });
-        assertTrue(exception.getMessage().contains("Comments contains unacceptable language"));
+        }).isInstanceOf(SpringRedditException.class).hasMessage("Comments contains unacceptable language");
     }
 
 }
