@@ -1,8 +1,11 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.PostRequest;
 import com.example.demo.dto.PostResponse;
 import com.example.demo.mapper.PostMapper;
 import com.example.demo.model.Post;
+import com.example.demo.model.Subreddit;
+import com.example.demo.model.User;
 import com.example.demo.repository.PostRepository;
 import com.example.demo.repository.SubredditRepository;
 import com.example.demo.repository.UserRepository;
@@ -10,12 +13,15 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
 import java.util.Optional;
+
+import static java.util.Collections.emptyList;
 
 @ExtendWith(MockitoExtension.class)
 class PostServiceTest {
@@ -49,5 +55,26 @@ class PostServiceTest {
 
         Assertions.assertThat(actualPostResponse.getId()).isEqualTo(expectedPostResponse.getId());
         Assertions.assertThat(actualPostResponse.getPostName()).isEqualTo(expectedPostResponse.getPostName());
+    }
+
+    //Verifying method invocations using Mockito
+    @Test
+    @DisplayName("Should Save Posts")
+    public void shouldSavePosts() {
+        PostService postService = new PostService(postRepository, subredditRepository, userRepository, authService, postMapper);
+
+        User currentUser = new User(123L, "test user", "secret password", "user@email.com", Instant.now(), true);
+        Subreddit subreddit = new Subreddit(123L, "First Subreddit", "Subreddit Description", emptyList(), Instant.now(), currentUser);
+        Post post = new Post(123L, "First Post", "http://url.site", "Test",
+                0, null, Instant.now(), null);
+        PostRequest postRequest = new PostRequest(null, "First Subreddit", "First Post", "http://url.site", "Test");
+
+        Mockito.when(subredditRepository.findByName("First Subreddit"))
+                .thenReturn(Optional.of(subreddit));
+        Mockito.when(postMapper.map(postRequest, subreddit, currentUser))
+                .thenReturn(post);
+        postService.save(postRequest);
+        Mockito.verify(postRepository, Mockito.times(1)).save(ArgumentMatchers.any(Post.class));
+
     }
 }
